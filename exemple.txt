@@ -1,0 +1,13 @@
+#Le programme calcule la somme des x premiers termes d’une suite
+# arithmétique
+123.232
+-(231.215)
+*
++
+-
+int x = 50
+Resultat = 0
+while ( x != 0 ) :
+Resultat = resultat + x
+x = x - 1
+
