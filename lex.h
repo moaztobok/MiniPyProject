@@ -9,4 +9,6 @@
   
     void pos(){
       printf("%d,%d  ",yylineo,Col);}
+    void Fpos(FILE *fp){
+      fprintf_s(fp,"%d,%d  ",yylineo,Col);}
 #endif
