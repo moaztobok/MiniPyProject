@@ -3,31 +3,29 @@
 #include<stdlib.h>
 #include<string.h>
 #include "lex.h"
-//   int yylineo=1; //compter le nombre de ligne
-//   int Col=1; //nombre de colonne
-//   void pos(){
-//      printf("%d,%d  ",yyline,Col);}
+   const FILE *O_lex=fopen("lex.txt","rw+");
+   extern yylineo,Col;
+
 %}
 com ^#.*
 lettreM [A-Z]
 lettre [a-zA-Z]
-chiffre[0-9]
-sep [\-\*\.\+\[\]<>\(\)/,=]|(and)|(or)|(not)|(!=)|(==)|(>=)|(<=)
-char {lettre}
+chiffre [0-9]
+sep [\[\](),]|(and)|(or)|(not)|(!=)|(==)|(>=)|(<=)
+char "|'{lettre}"|'
 bool (true)|(false)
 IDF {lettreM}({lettre}|{chiffre})*(_{lettre}|{chiffre})*
 cstint {chiffre}+
 float {chiffre}+\.{chiffre}+
-negfloat \(-{float}\)
-negint \(-{cstint}\)
+FLT (-{float})|{float}
+CST (-{cstint})|{cstint}
 %%
-
-{sep} {
-   pos();
-   printf("separateur: %s \n", yytext);
-   Col+=yyleng;
-}
-
+"*"		  {pos(); rechercher(yytext,"Multiplication","",0,2); Col+=yyleng;	return op_mul;}
+"/"        {pos(); rechercher(yytext,"Division","",0,2); Col+=yyleng; return op_div;}
+"-"        {pos(); rechercher(yytext,"Soustraction","",0,2); Col+=yyleng; return op_sub;}
+"+"        {pos(); rechercher(yytext,"Addition","",0,2); Col+=yyleng; return op_add;}
+"="		  {pos(); rechercher(yytext,"Affectation","",0,2); Col+=yyleng;	return aff;}
+","		  {pos(); rechercher(yytext,"virgule","",0,2); Col+=yyleng; return sep_vg;}
 {com} {
    pos();
    printf("ceci est une commentaire : \'%s \'\n", yytext);
@@ -36,91 +34,125 @@ negint \(-{cstint}\)
 \n yylineo++; Col=1;
 int {
    pos();
-   printf("declaration entier \n"); Col+=yyleng;
+   printf("declaration entier \n"); Col+=yyleng; 
+   rechercher(yytext, "Mot Cle","",0,1);
+   return mc_int;
 }
 char {
    pos();
-   printf("declaration char \n"); Col+=yyleng;
+   printf("declaration char \n"); Col+=yyleng; 
+   rechercher(yytext, "Mot Cle","",0,1);
+   return mc_char;
+
 }
 
-reel {
+float {
    pos();
    printf("declaration reel \n"); Col+=yyleng;
+   rechercher(yytext, "Mot Cle","",0,1);
+   return mc_float;
 }
 bool {
    pos();
    printf("declaration boolean \n"); Col+=yyleng;
+   rechercher(yytext, "Mot Cle","",0,1);
+   return mc_bool;
 }
 if {
    pos();
    printf("declaration if \n"); Col+=yyleng;
+      rechercher(yytext, "Mot Cle","",0,1);
+   return mc_if;
 }
 else {
    pos();
    printf("declaration else \n"); Col+=yyleng;
+      rechercher(yytext, "Mot Cle","",0,1);
+   return mc_else;
 }
 while {
    pos();
    printf("Boucle while \n"); Col+=yyleng;
+      rechercher(yytext, "Mot Cle","",0,1);
+   return mc_while;
 }
 for {
    pos();
    printf("Boucle for \n"); Col+=yyleng;
-}
-case {
-   pos();
-   printf("condition Switch case \n"); Col+=yyleng;
+      rechercher(yytext, "Mot Cle","",0,1);
+   return mc_for;
 }
 in {
    pos();
    printf("in \n"); Col+=yyleng;
+      rechercher(yytext, "Mot Cle","",0,1);
+   return mc_in;
 }
-range {
+in range {
    pos();
    printf("range \n"); Col+=yyleng;
+   rechercher(yytext, "Mot Cle","",0,1);
+   return mc_in_range;
 }
-
-{cstint} {
+  
+{CST} {
    pos();
+	Col+=yyleng;
    if ((atoi(yytext)>-32768)&&(atoi(yytext)<32767)){		  
 	   printf ("L entite lexicale reconnue est %s \n", yytext);
+      rechercher(yytext,"Entier","int",atoi(yytext),0);
+      yylval=atoi(yytext);
+      return val_int;
 	   }else
-         printf ("Erreur Lexical: constante entiere trop grande a la ligne %d a la colonne %d \n ",yylineo, Col);
-	Col+=yyleng;}
-{negint}	{
-            pos();
-				printf("l'entite entree %s est un entier negative\n",yytext);
-            Col+=yyleng;
-			 }
-{negfloat}   {
-            pos();
-            printf("this  is a negfloat %s \n",yytext);
-            Col+=yyleng;
-}
-{float}     {
-   pos();
-   printf("this is a float %s \n",yytext);
-   Col+=yyleng;
+         printf ("Erreur Lexical: constante entiere trop grande.");
+   }
+{FLT}   {pos();
+	   Col+=yyleng;
+      if ((atof(yytext)>-32768)&&(atof(yytext)<32767)){		  
+	   printf ("L entite lexicale reconnue est %s \n", yytext);
+      rechercher(yytext,"Reel","float",atof(yytext),0);
+      yylval=atof(yytext);
+      return val_float;
+	   }else
+         printf ("Erreur Lexical: constante entiere trop grande.");
 }
 {bool}      {
       pos();
       printf("l'entite %s est un valeur boolean\n", yytext);
       Col+=yyleng;
+      if(yytext=="true"){
+         rechercher(yytext,"boolean","bool",1,0);
+         yylval=1;}
+      else{
+         rechercher(yytext,"boolean","bool",0,0);
+         yylval=0;}
+      
+      return val_bool;
       }
-{char}      {
+{char}   { // 'c' yytext[1]
    pos();
    printf("ceci %s est un char\n", yytext);
+   rechercher(yytext,"Caractere","char",yytext[1],0);
+   yylval=yytext[1];
    Col+=yyleng;
+   retrun val_char;
    }
 {IDF}    {
-         pos(); 
-         if (yyleng>8) printf ("Erreur Lexical: IDF trop long a la ligne %d a la colonne %d \n ",yylineo, Col);
-            else {printf (" L entite lexicale reconnue est %s \n", yytext);}
-         Col+=yyleng;
-		  }
-. {pos();
+   pos(); 
+   Col+=yyleng;
+   if (yyleng>8){
+      printf ("Erreur Lexical: IDF trop long.");
+      }else{
+         printf (" L entite lexicale reconnue est %s \n", yytext);
+         rechercher(yytext,"IDF",0,0);
+         yylval=0;}
+      return idf;
+   }
+.  {
+   pos();
    printf ("Entite lexicale %s non reconnue\n",yytext);
-   Col+=yyleng;}
+   Col+=yyleng;
+   }
 %%
 int main() 
 {  
