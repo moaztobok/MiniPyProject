@@ -20,12 +20,23 @@ float {chiffre}+\.{chiffre}+
 FLT (-{float})|{float}
 CST (-{cstint})|{cstint}
 %%
-"*"		  {pos(); rechercher(yytext,"Multiplication","",0,2); Col+=yyleng;	return op_mul;}
-"/"        {pos(); rechercher(yytext,"Division","",0,2); Col+=yyleng; return op_div;}
-"-"        {pos(); rechercher(yytext,"Soustraction","",0,2); Col+=yyleng; return op_sub;}
-"+"        {pos(); rechercher(yytext,"Addition","",0,2); Col+=yyleng; return op_add;}
-"="		  {pos(); rechercher(yytext,"Affectation","",0,2); Col+=yyleng;	return aff;}
-","		  {pos(); rechercher(yytext,"virgule","",0,2); Col+=yyleng; return sep_vg;}
+"*"   {pos(); rechercher(yytext,"Multiplication","",0,2); Col+=yyleng;	return op_mul;}
+"/"   {pos(); rechercher(yytext,"Division","",0,2); Col+=yyleng; return op_div;}
+"-"   {pos(); rechercher(yytext,"Soustraction","",0,2); Col+=yyleng; return op_sub;}
+"+"   {pos(); rechercher(yytext,"Addition","",0,2); Col+=yyleng; return op_add;}
+"="   {pos(); rechercher(yytext,"Affectation","",0,2); Col+=yyleng;	return mc_aff;}
+","   {pos(); rechercher(yytext,"virgule","",0,2); Col+=yyleng; return sep_vg;}
+"<"   {pos(); rechercher(yytext,"inf","",0,2); Col+=yyleng; return cmp_l;}
+">"   {pos(); rechercher(yytext,"sup","",0,2); Col+=yyleng; return cmp_g;}
+"<="  {pos(); rechercher(yytext,"inf ou egal","",0,2); Col+=yyleng; return cmp_l_e;}
+">="  {pos(); rechercher(yytext,"sup ou egal","",0,2); Col+=yyleng; return cmp_g_e;}
+"=="  {pos(); rechercher(yytext,"Egalite","",0,2); Col+=yyleng; return cmp_e;}
+"!="  {pos(); rechercher(yytext,"Innegalite","",0,2); Col+=yyleng; return cmp_n_e;}
+"["   {pos(); rechercher(yytext,"Crochet Ouvrant","",0,2); Col+=yyleng; return sep_ob;}
+"]"   {pos(); rechercher(yytext,"Crochet Fermant","",0,2); Col+=yyleng; return sep_cb;}
+"("   {pos(); rechercher(yytext,"Parenthese Ouvrante","",0,2); Col+=yyleng; return sep_op;}
+")"   {pos(); rechercher(yytext,"Parenthese Fermante","",0,2); Col+=yyleng; return sep_cp;}
+":"   {pos(); rechercher(yytext,"Deux Points","",0,2); Col+=yyleng; return sep_dp;}
 {com} {
    pos();
    printf("ceci est une commentaire : \'%s \'\n", yytext);
