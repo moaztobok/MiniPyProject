@@ -9,9 +9,8 @@
 %}
 com ^#.*
 lettreM [A-Z]
-lettre [a-zA-Z]
+lettre [a-z{lettreM}]
 chiffre [0-9]
-sep [\[\](),]|(and)|(or)|(not)|(!=)|(==)|(>=)|(<=)
 char "|'{lettre}"|'
 bool (true)|(false)
 IDF {lettreM}({lettre}|{chiffre})*(_{lettre}|{chiffre})*
@@ -43,6 +42,11 @@ CST (-{cstint})|{cstint}
    Col+=yyleng;}
 " " Col++;
 \n yylineo++; Col=1;
+
+"and"   {pos(); rechercher(yytext,"AND logique","",0,2); Col+=yyleng; return cmp_and;}
+"and"   {pos(); rechercher(yytext,"OR logique","",0,2); Col+=yyleng; return cmp_or;}
+"not"   {pos(); rechercher(yytext,"NOT logique","",0,2); Col+=yyleng; return cmp_not;}
+
 int {
    pos();
    printf("declaration entier \n"); Col+=yyleng; 
@@ -99,20 +103,20 @@ in {
       rechercher(yytext, "Mot Cle","",0,1);
    return mc_in;
 }
-in range {
+"in range" {
    pos();
    printf("range \n"); Col+=yyleng;
    rechercher(yytext, "Mot Cle","",0,1);
    return mc_in_range;
 }
-  
+
 {CST} {
    pos();
 	Col+=yyleng;
    if ((atoi(yytext)>-32768)&&(atoi(yytext)<32767)){		  
 	   printf ("L entite lexicale reconnue est %s \n", yytext);
       rechercher(yytext,"Entier","int",atoi(yytext),0);
-      yylval=atoi(yytext);
+      yylval.ent=atoi(yytext);
       return val_int;
 	   }else
          printf ("Erreur Lexical: constante entiere trop grande.");
@@ -122,18 +126,18 @@ in range {
       if ((atof(yytext)>-32768)&&(atof(yytext)<32767)){		  
 	   printf ("L entite lexicale reconnue est %s \n", yytext);
       rechercher(yytext,"Reel","float",atof(yytext),0);
-      yylval=atof(yytext);
+      yylval.reel=atof(yytext);
       return val_float;
 	   }else
          printf ("Erreur Lexical: constante entiere trop grande.");
 }
-{bool}      {
+{bool}   {
       pos();
       printf("l'entite %s est un valeur boolean\n", yytext);
       Col+=yyleng;
       if(yytext=="true"){
          rechercher(yytext,"boolean","bool",1,0);
-         yylval=1;}
+         yylval.car=1;}
       else{
          rechercher(yytext,"boolean","bool",0,0);
          yylval=0;}
@@ -144,7 +148,7 @@ in range {
    pos();
    printf("ceci %s est un char\n", yytext);
    rechercher(yytext,"Caractere","char",yytext[1],0);
-   yylval=yytext[1];
+   yylval.car=yytext[1];
    Col+=yyleng;
    retrun val_char;
    }

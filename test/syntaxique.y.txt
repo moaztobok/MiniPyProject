@@ -3,17 +3,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lex.h"
+#include "ts.h"
 
 void* Pile;
 %}
 
-%union{
+%union {
     int   ent;
     char* str;
     float reel;
     char car;
 }
-
 
 %left mc_aff
 %left op_div op_mul 
@@ -28,13 +29,12 @@ void* Pile;
 %token sep_vg sep_ob sep_cb sep_op sep_cp sep_dp       
 %token mc_if mc_else mc_while mc_for mc_in mc_in_range 
 
-%type <ent><car><reel>VALUE
-%type <str>TYPE
+%type <str> TYPE
 
 %start S
 
 %% 
-S : DEC_VAR S | INST S
+S : DEC_VAR 
 	
 DEC_VAR: TYPE idf LIST_IDF { 
     if(DoubleDecalaration($1,0))

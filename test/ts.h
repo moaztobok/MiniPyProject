@@ -1,5 +1,5 @@
 #ifndef TS_H
-#define TS_H
+	#define TS_H
 
 /****************CREATION DE LA TABLE DES SYMBOLES ******************/
 /***Step 1: Definition des structures de données ***/
@@ -201,25 +201,29 @@ for (i = 0; i < cpts; i++)
 
 // une fonction recherche qui retourne la position d'une entite dans la ts
 int recherche(char entite[],int y)
-{ 
-	int i;
-	i =0;
+{
+	int i=0;
 	switch (y)
 	{
-	case 0: 	
+	case 0:	
+		
 		while(i<1000)
 			{
-			if (strcmp(entite,tab[i].name)==0) return i;
-			else i++;
+			if (strcmp(entite,tab[i].name)==0){ 
+				return i;
+			}else{
+				i++;}
 			}
 
 	case 1:
+		
 		while(i<40)
 		{
 		if (strcmp(entite,tabm[i].name)==0) return i;
 		else i++;
 		}
 	case 2:
+		
 		while(i<40)
 		{
 		if (strcmp(entite,tabs[i].name)==0) return i;
@@ -233,21 +237,20 @@ return -1;
 	
 void insererTYPE(char entite[],const char *type, int y)
 {
+	int pos;
 	switch(y){
 		case 0:
-			int pos;
+			
    			pos=recherche(entite,0);
 			if(pos!=-1)
    			strcpy(tab[pos].type,type);
 		break;
 		case 1:
-			int pos;
    			pos=recherche(entite,1);
 			if(pos!=-1)
    			strcpy(tabm[pos].type,type);
 		break;
 		case 2:
-			int pos;
    			pos=recherche(entite,2);
 			if(pos!=-1)
    			strcpy(tabs[pos].type,type);
@@ -273,24 +276,23 @@ void maj(char entite[], char type[])
 // exemple d'une focntion qui detecte la double declaration
 int doubleDeclaration(char entite[],int y)
 {
+	int pos;
 	switch (y)
 	{
 	case 0:
-		int pos;
+		
 		pos=recherche(entite,0);
 		if(strcmp(tab[pos].type,"")==0) return 0;
 	   	else return -1;
 		break;
 
 	case 1:
-		int pos;
 		pos=recherche(entite,1);
 		if(strcmp(tab[pos].type,"")==0) return 0;
 	   	else return -1;
 		break;
 
 	case 2:
-		int pos;
 		pos=recherche(entite,2);
 		if(strcmp(tab[pos].type,"")==0) return 0;
 	   	else return -1;
