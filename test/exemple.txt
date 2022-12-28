@@ -5,4 +5,6 @@ Y = 12.6
 Z = X 
 G = X + Y
 G = X - Y
-if (X <= Y)
+if (X <= Y) :
+    Z = X
+    G = X + G
