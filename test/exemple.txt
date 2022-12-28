@@ -1,3 +1,8 @@
-int x
-
-int x
+int X
+X = 15
+float Y
+Y = 12.6
+Z = X 
+G = X + Y
+G = X - Y
+if (X <= Y)
