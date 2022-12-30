@@ -48,20 +48,21 @@ OP_AFF: idf mc_aff VALUE  { printf("Affect\n");}
     | idf mc_aff idf  
     | idf mc_aff OP_ARTH
     ;
-OP_ARTH : idf op_add idf  {printf("add")}
-    |     idf op_sub idf  {printf("sous")}
-    |     idf op_div idf  {printf("div")}
-    |     idf op_mul idf  {printf("mul")}
+OP_ARTH : idf op_add idf  {printf("add");}
+    |     idf op_sub idf  {printf("sous");}
+    |     idf op_div idf  {printf("div");}
+    |     idf op_mul idf  {printf("mul");}
     ;
 VALUE: val_int  {$$=$1;}
     | val_float {$$=$1;}
     | val_car   {$$=$1;}
     | val_bol   {$$=$1;}
     ;
-BLOC_IF : mc_if sep_op COND sep_cp sep_dp INST {printf(if bloc)}
-    | mc_if sep_op COND sep_cp sep_dp INST BLOC_ELSE {printf(if else bloc)}
+BLOC_IF : mc_if sep_op COND sep_cp sep_dp INST {printf("if bloc");}
+    | mc_if sep_op COND sep_cp sep_dp INST BLOC_ELSE {printf("if else bloc");}
     ;
 BLOC_ELSE: mc_else sep_dp INST
+    ;
 COND : idf OP_l idf
     | idf OP_l VALUE
     | idf OP_l idf cmp_and COND

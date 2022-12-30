@@ -263,7 +263,7 @@ void maj(char entite[], char type[])
 	for (i=0;((i<1000)&&(tab[i].state==1))&&(strcmp(entite,tab[i].name)!=0);i++); 
         if(i<1000);
 			
-    strcpy(tab[i].type,type) ;
+    strcpy(tab[i].type,type);
 }
 
 
