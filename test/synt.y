@@ -1,6 +1,9 @@
 %{
     #include<stdlib.h>
     #include<stdio.h>
+    #include "synt.tab.h"
+    #include "lex.h"
+    #include "ts.h"
 %}
 
 %union {
@@ -80,6 +83,8 @@ OP_l : cmp_and
 
 %%
 int main(){
-    return yyparse();
+    yyparse();
+    display();
+    return 0;
 }
 

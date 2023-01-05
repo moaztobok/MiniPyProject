@@ -4,10 +4,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-int yylineo=1; //compter le nombre de ligne
-int Col=1; //nombre de colonne
+static int yylineo=1; //compter le nombre de ligne
+static int Col=1; //nombre de colonne
 
-void pos(){
+static void pos(){
 	printf("%d,%d  ",yylineo,Col);
 }
 

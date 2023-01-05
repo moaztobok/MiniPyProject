@@ -23,12 +23,14 @@ typedef struct nod {
     struct nod *next;
 }nod;
 
-int find(char name[],char y);
+
 node *insertNode(char name[],char type[],char code[],float val);
 nod *insertNod(char name[],char type[]);
 int addNode(char name[],char type[],char code[],float val,char y);
 int updateNode(node *T,char name[],char type[],char code[],float val,Updates flag);
 int updateNod(nod *T,char name[],char type[],Updates flag);
+int find(char name[],char y);
 void Maj(char name[],char type[],char code[],float val,char y,Updates flag);
+void display();
 
 #endif

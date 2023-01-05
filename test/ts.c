@@ -13,8 +13,8 @@ int find(char name[],char y){
     {
     case 0:
         p=tabi;
-        while(p->next!=NULL){
-            if(strcmp(p->name,name)){
+        while(p!=NULL){
+            if(!strcmp(p->name,name)){
                 return pos; break;
             }
             pos++;
@@ -23,8 +23,8 @@ int find(char name[],char y){
         break;
     case 1:
         q=tabs;
-        while(q->next!=NULL){
-            if(strcmp(q->name,name)){
+        while(q!=NULL){
+            if(!strcmp(q->name,name)){
                 return pos; break;
             }
             pos++;
@@ -33,8 +33,8 @@ int find(char name[],char y){
         break;
     case 2:
         q=tabm;
-        while(q->next!=NULL){
-            if(strcmp(q->name,name)){
+        while(q!=NULL){
+            if(!strcmp(q->name,name)){
                 return pos; break;
             }
             pos++;
@@ -61,50 +61,55 @@ nod *insertNod(char name[],char type[]){
     return q;
 }
 int addNode(char name[],char type[],char code[],float val,char y){
-    switch (y)
-    {
-    case 0:
-        if(cpti==0){
-            tabi=insertNode(name,type,code,val);
-            cpti++;
-        }else if(cpti<1000){
-            node *p=tabi;
-            while (p->next!=NULL && !strcmp(p->name,name))
-                p=p->next;
-            p->next=insertNode(name,type,code,val);
-            cpti++;           
-        }else{
-            printf("no more space in tab %d",(int)y+1);
+    int i;
+    if(i=find(name,y)!=-1){
+        return -1;
+    }else{
+        switch (y)
+        {
+        case 0:
+            if(cpti==0){
+                tabi=insertNode(name,type,code,val);
+                cpti++;
+            }else if(cpti<1000){
+                node *p=tabi;
+                while (p->next!=NULL)
+                    p=p->next;
+                p->next=insertNode(name,type,code,val);
+                cpti++;           
+            }else{
+                printf("no more space in tab %d",(int)y+1);
+            }
+            break;
+        case 1:
+            if(cpts==0){
+                tabs=insertNod(name,type);
+                cpts++;
+            }else if(cpts<40){
+                nod *p=tabs;
+                while (p->next!=NULL)
+                    p=p->next;
+                p->next=insertNod(name,type);
+                cpts++;
+            }else{
+                printf("no more space in tab %d",(int)y+1);
+            }
+            break;
+        case 2:
+            if(cptm==0){
+                tabm=insertNod(name,type);
+                cptm++;
+            }else if(cptm<40){
+                nod *p=tabm;
+                while (p->next!=NULL)
+                    p=p->next;
+                p->next=insertNod(name,type);
+                cptm++;         
+            }else{
+                printf("no more space in tab %d",(int)y+1);
+            }
+            break;
         }
-        break;
-    case 1:
-        if(cpts==0){
-            tabs=insertNod(name,type);
-            cpts++;
-        }else if(cpts<40){
-            nod *p=tabs;
-            while (p->next!=NULL && !strcmp(p->name,name))
-                p=p->next;
-            p->next=insertNod(name,type);
-            cpts++;
-        }else{
-            printf("no more space in tab %d",(int)y+1);
-        }
-        break;
-    case 2:
-        if(cptm==0){
-            tabm=insertNod(name,type);
-            cptm++;
-        }else if(cptm<40){
-            nod *p=tabm;
-            while (p->next!=NULL && !strcmp(p->name,name))
-                p=p->next;
-            p->next=insertNod(name,type);
-            cptm++;         
-        }else{
-            printf("no more space in tab %d",(int)y+1);
-        }
-        break;
     }
     return 0;
 }
@@ -140,7 +145,7 @@ void Maj(char name[],char type[],char code[],float val,char y,Updates flag){
     case 0:
         p=tabi;
         while(p!=NULL){
-            if(strcmp(p->name,name)){
+            if(!strcmp(p->name,name)){
                 updateNode(p,name,type,code,val,flag);
                 break;
             }
@@ -149,7 +154,7 @@ void Maj(char name[],char type[],char code[],float val,char y,Updates flag){
     case 1:
         q=tabs;
         while(q!=NULL){
-            if(strcmp(q->name,name)){
+            if(!strcmp(q->name,name)){
                 updateNod(q,name,type,flag|0x03);
                 break;
             }
@@ -158,7 +163,7 @@ void Maj(char name[],char type[],char code[],float val,char y,Updates flag){
     case 2:
         q=tabm;
         while(q!=NULL){
-            if(strcmp(q->name,name)){
+            if(!strcmp(q->name,name)){
                 updateNod(q,name,type,flag|0x03);
                 break;
             }
@@ -168,5 +173,37 @@ void Maj(char name[],char type[],char code[],float val,char y,Updates flag){
 }
 
 void display(){
-    printf
+    printf("\n**Table de symboles**\n----------------IDFs----------------\n");
+    printf("_______________________________________________________________\n");
+    printf("| pos |     name    |     type     |    code    |     val     |\n");
+    printf("_______________________________________________________________\n");
+    node *p=tabi; int pos=0;
+    while(p!=NULL){
+        printf("|%5d|  %10s | %12s | %10s | %12f|\n",pos,p->name,p->type,p->code,p->val);
+        printf("_______________________________________________________________\n");
+        pos++; p=p->next;
+    }
+
+    printf("\n----------------SYMB----------------\n");
+    printf("___________________________________\n");
+    printf("| pos |     name    |     type     |\n");
+    printf("___________________________________\n");
+    nod *q=tabs; pos=0;
+    while(q!=NULL){
+        printf("|%5d|  %10s | %12s |\n",pos,q->name,q->type);
+        printf("___________________________________\n");
+        pos++; q=q->next;
+    }
+
+    printf("\n---------------KWds----------------\n");
+    printf("___________________________________\n");
+    printf("| pos |     name    |     type     |\n");
+    printf("___________________________________\n");
+    q=tabm; pos=0;
+    while(q!=NULL){
+        printf("|%5d|  %10s | %12s |\n",pos,q->name,q->type);
+        printf("___________________________________\n");
+        pos++; q=q->next;
+    }
+    
 }
