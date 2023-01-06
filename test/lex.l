@@ -20,20 +20,23 @@ CST (-{cstint})|{cstint}
 %%
 int {
     pos();
-    addNode(yytext,"Mot Cle","",0,2);
     Col+=yyleng;
+    addNode(yytext,"Mot Cle","",0,2);
+    yylval.str=strdup(yytext);
     return mc_int;
 }
 float {
     pos(); 
     addNode(yytext,"Mot Cle","",0,2);
     Col+=yyleng;
+    yylval.str=strdup(yytext);
     return mc_float;
 }
 char {
-    pos(); 
+    pos();
     addNode(yytext,"Mot Cle","",0,2);
     Col+=yyleng;
+    yylval.str=strdup(yytext);
     return mc_car;
 }
 bool {
@@ -41,14 +44,13 @@ bool {
     Col+=yyleng;
     addNode(yytext,"Mot Cle","",0,2);
     printf("declaration boolean \n"); Col+=yyleng;
-   
+    yylval.str=strdup(yytext);
    return mc_bool;
 }
 if {
    pos();
    printf("Bloq_con_if \n"); Col+=yyleng;
     addNode(yytext,"Mot Cle","",0,2);
-     
    return mc_if;
 }
 else {
@@ -90,6 +92,7 @@ in {
     Col+=yyleng;
     if(yyleng<8){
         addNode(yytext,"IDF","",0,0);
+        yylval.str=strdup(yytext);
         return idf;
     }else
         printf("idf trop long!\n");

@@ -4,6 +4,7 @@
     #include "synt.tab.h"
     #include "lex.h"
     #include "ts.h"
+    #include "synt.h"
 %}
 
 %union {
@@ -24,47 +25,52 @@
 %token <ent> val_int
 %token <reel> val_float 
 %token <car> val_car val_bol
-%type <str> TYPE  /*LIST_IDF*/ 
-%type <reel> VALUE 
+%nterm <str> TYPE
+%nterm <reel> VALUE 
 
 %start S
 
 %%
-
 S   : /*empty*/
-    | DEC_VAR S   
-    | INST S
+    | DEC_VAR S
     ;      
-DEC_VAR: TYPE idf LIST_IDF{}
+DEC_VAR: TYPE idf {
+    if(find($2,0))
+        Maj($2,"",$1,0,0,U_code);
+    else
+        printf("idf <%s> undeclared\n.",$2);
+}
     ;
 TYPE: mc_int
     | mc_float
     | mc_car
+    | mc_bool
     ;
-LIST_IDF : sep_vg idf LIST_IDF {}
-    | /*empty*/
-    ; 
+
+VALUE: val_int 
+    | val_float
+    | val_car  
+    | val_bol  
+    ;
+/*
 INST : OP_AFF
     | BLOC_IF
     ;
-OP_AFF: idf mc_aff VALUE  { printf("Affect\n");}
-    | idf mc_aff idf  
+OP_AFF: idf mc_aff VALUE
+    | idf mc_aff idf
     | idf mc_aff OP_ARTH
     ;
-OP_ARTH : idf op_add idf  {printf("add");}
+OP_ARTH : idf op_add idf  {}
     |     idf op_sub idf  {printf("sous");}
     |     idf op_div idf  {printf("div");}
     |     idf op_mul idf  {printf("mul");}
-    ;
-VALUE: val_int  {$$=$1;}
-    | val_float {$$=$1;}
-    | val_car   {$$=$1;}
-    | val_bol   {$$=$1;}
     ;
 BLOC_IF : mc_if sep_op COND sep_cp sep_dp INST {printf("if bloc");}
     | mc_if sep_op COND sep_cp sep_dp INST BLOC_ELSE {printf("if else bloc");}
     ;
 BLOC_ELSE: mc_else sep_dp INST
+    ;
+BLOC_WHILE : mc_while sep_ob COND sep_dp INST
     ;
 COND : idf OP_l idf
     | idf OP_l VALUE
@@ -80,6 +86,8 @@ OP_l : cmp_and
     | cmp_n_e
     | cmp_not
     | cmp_or
+    ;
+    */
 
 %%
 int main(){
