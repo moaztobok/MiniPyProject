@@ -28,7 +28,7 @@
 %token <reel> val_float 
 %token <car> val_car val_bol
 %type <car> Cond
-%type <reel> VALUE
+%type <reel> VALUE EXP
 %start S
 %%
 
@@ -97,9 +97,10 @@ EXP: idf mc_aff VALUE {
             printf("Entitee <%s> introuvable!\n",$1);
     }
     |idf mc_aff EXP 
-    |VALUE op_add VALUE 
-    |VALUE op_sub VALUE 
-    |VALUE op_div VALUE 
+    | VALUE
+    | idf {$$=getval($1);}
+    | EXP op_add EXP {$$ = $1 + $3;}
+    | sep_op EXP sep_cp {$$=$2;}
     ;
 VALUE: val_float {$$=$1;}
     | val_int {$$=$1;}
