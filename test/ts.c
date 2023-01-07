@@ -199,6 +199,13 @@ char getBool(char *name){
     node *p=tabi;
     while(p!=NULL && strcmp(name,p->name))
         p=p->next;
-    if(p->val==1.0) return 1;
+    if(p!=NULL && p->val!=0.00) return 1;
     return 0;
+}
+double getval(char *name){
+    node *p=tabi;
+    while(p!=NULL && strcmp(name,p->name))
+        p=p->next;
+    if(p!=NULL) return p->val;
+    return 0.0;
 }
