@@ -5,11 +5,13 @@
     #include "lex.h"
     #include "ts.h"
     #include "synt.h"
+
+    char T_code[20];
 %}
 
 %union {
     int ent;
-    float reel;
+    double reel;
     char car;
     char *str;
 }
@@ -25,70 +27,85 @@
 %token <ent> val_int
 %token <reel> val_float 
 %token <car> val_car val_bol
-%nterm <str> TYPE
-%nterm <reel> VALUE 
-
+%type <car> Cond
+%type <reel> VALUE
 %start S
-
 %%
-S   : /*empty*/
-    | DEC_VAR S
-    ;      
-DEC_VAR: TYPE idf {
-    if(find($2,0))
-        Maj($2,"",$1,0,0,U_code);
-    else
-        printf("idf <%s> undeclared\n.",$2);
-}
-    ;
-TYPE: mc_int
-    | mc_float
-    | mc_car
-    | mc_bool
-    ;
 
-VALUE: val_int 
-    | val_float
-    | val_car  
-    | val_bol  
+S: DEC_VAR S
+    | Cond S
+    | EXP S
+    |
     ;
-/*
-INST : OP_AFF
-    | BLOC_IF
+DEC_VAR: TYPE LIST_IDF
     ;
-OP_AFF: idf mc_aff VALUE
-    | idf mc_aff idf
-    | idf mc_aff OP_ARTH
+LIST_IDF: LIST_IDF sep_vg idf {
+        if(find($3,0))
+            Maj($3,"",T_code,0,0,U_code);
+        else
+            printf("Entitee <%s> introuvable!\n",$3);
+    }
+    | idf {
+        if(find($1,0))
+            Maj($1,"",T_code,0,0,U_code);
+        else
+            printf("Entitee <%s> introuvable!\n",$1);
+    }
+    | LIST_IDF sep_vg TAB
+    | TAB
     ;
-OP_ARTH : idf op_add idf  {}
-    |     idf op_sub idf  {printf("sous");}
-    |     idf op_div idf  {printf("div");}
-    |     idf op_mul idf  {printf("mul");}
+TAB: idf sep_ob val_int sep_cb {
+        if(find($1,0))
+            Maj($1,"",T_code,0,0,U_code|U_val);//malloc(getsize(T_code)*$3)
+        else
+            printf("Entitee <%s> introuvable!\n",$1);
+    }
     ;
-BLOC_IF : mc_if sep_op COND sep_cp sep_dp INST {printf("if bloc");}
-    | mc_if sep_op COND sep_cp sep_dp INST BLOC_ELSE {printf("if else bloc");}
+TYPE: mc_int {strcpy(T_code,$1);}
+    | mc_float {strcpy(T_code,$1);}
+    | mc_car {strcpy(T_code,$1);}
+    | mc_bool {strcpy(T_code,$1);}
     ;
-BLOC_ELSE: mc_else sep_dp INST
+//
+Cond:
+    val_bol {
+        if($1) $$=1; else $$=0; }
+    | idf {$$=getBool($1);}
+    | Cond cmp_or Cond 
+        {if($1||$3)$$=1; else $$=0;}
+    | Cond cmp_and Cond 
+        {if($1&&$3)$$=1; else $$=0;}
+    | cmp_not Cond 
+        {if(!$2)$$=1; else $$=0;}
+    | Cond cmp_e Cond 
+        {if($1==$3)$$=1; else $$=0;}
+    | Cond cmp_n_e Cond 
+        {if($1!=$3)$$=1; else $$=0;}
+    | Cond cmp_l Cond 
+        {if($1<$3)$$=1; else $$=0;}
+    | Cond cmp_l_e Cond 
+        {if($1<=$3)$$=1; else $$=0;}
+    | Cond cmp_g Cond 
+        {if($1>$3)$$=1; else $$=0;}
+    | Cond cmp_g_e Cond 
+        {if($1>=$3)$$=1; else $$=0;}
     ;
-BLOC_WHILE : mc_while sep_ob COND sep_dp INST
+EXP: idf mc_aff VALUE {
+        if(find($1,0))
+            Maj($1,"","",$3,0,U_val);
+        else
+            printf("Entitee <%s> introuvable!\n",$1);
+    }
+    |idf mc_aff EXP 
+    |VALUE op_add VALUE 
+    |VALUE op_sub VALUE 
+    |VALUE op_div VALUE 
     ;
-COND : idf OP_l idf
-    | idf OP_l VALUE
-    | idf OP_l idf cmp_and COND
-    | idf OP_l idf cmp_or COND
+VALUE: val_float {$$=$1;}
+    | val_int {$$=$1;}
+    | val_car {$$=(double)$1;}
+    | val_bol {$$=$1;}
     ;
-OP_l : cmp_and
-    | cmp_e
-    | cmp_g                                          
-    | cmp_l
-    | cmp_g_e
-    | cmp_l_e
-    | cmp_n_e
-    | cmp_not
-    | cmp_or
-    ;
-    */
-
 %%
 int main(){
     yyparse();

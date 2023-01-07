@@ -10,10 +10,10 @@ com ^#.*
 lettreM [A-Z]
 lettre [a-z{lettreM}]
 chiffre [0-9]
-char "|'{lettre}"|'
+char ('.')
 bool (true)|(false)
 IDF {lettreM}({lettre}|{chiffre})*(_{lettre}|{chiffre})*
-cstint {chiffre}+
+cstint {chiffre}+   
 float {chiffre}+\.{chiffre}+
 FLT (-{float})|{float}
 CST (-{cstint})|{cstint}
@@ -101,7 +101,6 @@ in {
     pos();
     Col+=yyleng;
     if(atoi(yytext)<=32768 && atoi(yytext)>=-32768){
-        addNode(yytext,"Entier","int",atof(yytext),0);
         yylval.ent=atoi(yytext);
         return val_int;
     }else
@@ -111,7 +110,6 @@ in {
     pos(); 
     Col+=yyleng;
     if(atof(yytext)<=32768 && atof(yytext)>=-32768){
-        addNode(yytext,"Reel","float",atof(yytext),0);
         yylval.reel=atof(yytext);
         return val_float;
     }else
@@ -120,19 +118,16 @@ in {
 {char} {
     pos();
     Col+=yyleng;
-    addNode(yytext,"Caractere","char",yytext[1],0);
-    yylval.car=yytext[1];
+    yylval.car=(char)yytext[1];
     return val_car; 
 }
 {bool} {
     pos(); 
     Col+=yyleng;
     if(!strcmp(yytext,"true")){
-        addNode(yytext,"Booleen","bool",1,0);
-        yylval.car=1;
+        yylval.car=(char)1;
     }else{
-        addNode(yytext,"Booleen","bool",0,0);
-        yylval.car=0;}
+        yylval.car=(char)0;}
     return val_bol;
 }
 
@@ -148,6 +143,9 @@ in {
 ">="    {pos(); Col+=yyleng; addNode(yytext,"SUP_EG","",0,1); return cmp_g_e;}
 "=="    {pos(); Col+=yyleng; addNode(yytext,"Egalitee","",0,1); return cmp_e;}
 "!="    {pos(); Col+=yyleng; addNode(yytext,"Inegalitee","",0,1); return cmp_n_e;}
+"or"    {pos(); Col+=yyleng; addNode(yytext,"OR","",0,1); return cmp_or;}
+"and"    {pos(); Col+=yyleng; addNode(yytext,"AND","",0,1); return cmp_and;}
+"not"    {pos(); Col+=yyleng; addNode(yytext,"NOT","",0,1); return cmp_not;}
 "["     {pos(); Col+=yyleng; addNode(yytext,"Crch ouvr","",0,1); return sep_ob;}
 "]"     {pos(); Col+=yyleng; addNode(yytext,"Crch ferm","",0,1); return sep_cb;}
 "("     {pos(); Col+=yyleng; addNode(yytext,"Par ouvr","",0,1); return sep_op;}

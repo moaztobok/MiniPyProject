@@ -1,1 +1,7 @@
-int X
+int T,X,Y,Z
+char V [ 100 ] , H [ 50 ] 
+true or false
+Y = 15.01
+X = 14  
+T = true
+X = 'c'

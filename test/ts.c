@@ -46,7 +46,7 @@ int find(char name[],char y){
         break;
     }
 }
-node *insertNode(char name[],char type[],char code[],float val){
+node *insertNode(char name[],char type[],char code[],double val){
     node* q=malloc(sizeof(node));
     strcpy(q->name,name);
     strcpy(q->type,type);
@@ -62,7 +62,7 @@ nod *insertNod(char name[],char type[]){
     q->next=NULL;
     return q;
 }
-int addNode(char name[],char type[],char code[],float val,char y){
+int addNode(char name[],char type[],char code[],double val,char y){
     if(find(name,y)!=0){
         return -1;
     }
@@ -114,7 +114,7 @@ int addNode(char name[],char type[],char code[],float val,char y){
     return 0;
 }
 
-int updateNode(node* T,char name[],char type[],char code[],float val,Updates flag){
+int updateNode(node* T,char name[],char type[],char code[],double val,Updates flag){
     node *p=T;
     while(p->next!=NULL && strcmp(p->name,name)!=0 )
         p=p->next;
@@ -144,7 +144,7 @@ int updateNod(nod* T,char name[],char type[],Updates flag){
         }else return 1;    
 }
 
-void Maj(char name[],char type[],char code[],float val,char y,Updates flag){
+void Maj(char name[],char type[],char code[],double val,char y,Updates flag){
     switch (y)
     {
     case 0:
@@ -193,4 +193,12 @@ void display(){
         pos++; q=q->next;
     }
     
+}
+
+char getBool(char *name){
+    node *p=tabi;
+    while(p!=NULL && strcmp(name,p->name))
+        p=p->next;
+    if(p->val==1.0) return 1;
+    return 0;
 }
