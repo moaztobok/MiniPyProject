@@ -21,7 +21,7 @@
 %left  op_mul op_div sep_ob  // '(' '*' '/'
 %right cmp_not sep_cb        // ')' '!'
 %token sep_vg  sep_op sep_cp sep_dp 
-%token mc_if mc_else mc_while mc_for mc_in mc_in_range 
+%token mc_if mc_else mc_while mc_for mc_in mc_in_range
 %token <str> mc_int mc_float mc_car mc_bool idf
 %token <ent> val_int
 %token <reel> val_float 
@@ -66,8 +66,8 @@ TYPE: mc_int {strcpy(T_code,$1);}
 EXP: VALUE
     | idf {$$=getval($1);}
     | idf mc_aff EXP {
-        if(find($1,0)) Maj($1,"","",$3,0,U_val); else
-            printf("Entitee <%s> introuvable!\n",$1);} 
+        if(find($1,0)) Maj($1,"","",$3,0,U_val);
+        else printf("Entitee <%s> introuvable!\n",$1);} 
     | EXP op_add EXP {$$ = $1 + $3;}
     | EXP op_sub EXP {$$ = $1 - $3;}
     | EXP op_mul EXP {$$ = $1 * $3;}

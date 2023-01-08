@@ -37,5 +37,8 @@ int updateNode(node *T,char name[],char type[],char code[],double val,Updates fl
 int updateNod(nod *T,char name[],char type[],Updates flag);
 void Maj(char name[],char type[],char code[],double val,char y,Updates flag);
 void display();
+char getBool(char *name);
+double getval(const char *name);
+
 
 #endif

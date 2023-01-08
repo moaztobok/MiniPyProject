@@ -202,10 +202,11 @@ char getBool(char *name){
     if(p!=NULL && p->val!=0.00) return 1;
     return 0;
 }
-double getval(char *name){
+double getval(const char *name){
     node *p=tabi;
-    while(p!=NULL && strcmp(name,p->name))
+    while(p!=NULL && strcmp(name,p->name)!=0){
         p=p->next;
-    if(p!=NULL) return p->val;
-    return 0.0;
+    }
+    if(p!=NULL){ return p->val;}
+    else{ return 0.0;}
 }
