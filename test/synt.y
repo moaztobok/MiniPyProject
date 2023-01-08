@@ -74,23 +74,23 @@ EXP: VALUE
     | EXP op_div EXP {if($3!=0) $$ = $1 / $3; else {$$=1; printf("Division par 0 impossible!\n");}}
     | sep_op EXP sep_cp {$$=$2;}
     | EXP cmp_or EXP 
-        {if($1||$3)$$=1; else $$=0;}
+        {$$=($1||$3)?1:0;}
     | EXP cmp_and EXP 
-        {if($1&&$3)$$=1; else $$=0;}
+        {$$=($1&&$3)?1:0;}
     | cmp_not EXP 
-        {if(!$2)$$=1; else $$=0;}
+        {$$=(!$2)?1:0;}
     | EXP cmp_e EXP 
-        {if($1==$3)$$=1; else $$=0;}
+        {$$=($1==$3)?1:0;}
     | EXP cmp_n_e EXP 
-        {if($1!=$3)$$=1; else $$=0;}
+        {$$=($1!=$3)?1:0;}
     | EXP cmp_l EXP 
-        {if($1<$3)$$=1; else $$=0;}
+        {$$=($1<$3)?1:0;}
     | EXP cmp_l_e EXP 
-        {if($1<=$3)$$=1; else $$=0;}
+        {$$=($1<=$3)?1:0;}
     | EXP cmp_g EXP 
-        {if($1>$3)$$=1; else $$=0;}
+        {$$=($1>$3)?1:0;}
     | EXP cmp_g_e EXP 
-        {if($1>=$3)$$=1; else $$=0;}
+        {$$=($1>=$3)?1:0;}
     ;
 VALUE: val_float {$$=$1;}
     | val_int {$$=$1;}
