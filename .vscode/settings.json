@@ -2,5 +2,6 @@
     "files.associations": {
         "string.h": "c",
         "ts.h": "c"
-    }
+    },
+    "editor.mouseWheelZoom": true
 }

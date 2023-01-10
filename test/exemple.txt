@@ -1,6 +1,15 @@
 int T,X,Y,Z
 char V [ 100 ] , H [ 50 ] 
+char Tab [ 100 ]
 true or false
 Y = 15.01
 X =  Y + Y
 T = true or false
+if ( 14 > 15) :
+    Y = 5 + 6
+    else:
+while ( X < Y ) : 
+    Deznuts = 15+Y*(X + 2)
+X=0
+for I in Tab :
+I=69
